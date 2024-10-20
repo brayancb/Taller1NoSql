@@ -1,34 +1,45 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
 import { CursosService } from './cursos.service';
-import { CreateCursoDto } from './dto/create-curso.dto';
+import { crearCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 
 @Controller('cursos')
 export class CursosController {
   constructor(private readonly cursosService: CursosService) {}
 
-  @Post()
-  create(@Body() createCursoDto: CreateCursoDto) {
+  @Post('crearCurso')
+  create(@Body() createCursoDto: crearCursoDto) {
     return this.cursosService.create(createCursoDto);
   }
 
-  @Get()
+  // Obtener solo la información básica de todos los cursos
+  @Get('infoBasica')
+  findAllBasicInfo() {
+    return this.cursosService.findAllBasicInfo();
+  }
+
+  // Obtener el detalle completo de todos los cursos
+  @Get('listar')
   findAll() {
     return this.cursosService.findAll();
   }
 
+  // Obtener el detalle de un curso específico por ID
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.cursosService.findOne(+id);
+    return this.cursosService.findOne(id);
   }
 
+  // Actualizar un curso por ID
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCursoDto: UpdateCursoDto) {
-    return this.cursosService.update(+id, updateCursoDto);
+    return this.cursosService.update(id, updateCursoDto);
   }
 
+  // Eliminar un curso por ID
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.cursosService.remove(+id);
+    return this.cursosService.remove(id);
   }
 }
+

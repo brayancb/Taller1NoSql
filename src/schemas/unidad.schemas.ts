@@ -2,7 +2,7 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema()
-export class Unit {
+export class unidad extends Document {
   @Prop({ required: true })
   name: string;
 
@@ -16,5 +16,8 @@ export class Unit {
   classes: Types.ObjectId[]; // Referencia a las clases dentro de la unidad
 }
 
-export type UnitDocument = Unit & Document;
-export const UnitSchema = SchemaFactory.createForClass(Unit);
+export type UnitDocument = unidad & Document;
+const UnitSchema = SchemaFactory.createForClass(unidad);
+
+// Asegúrate de exportar correctamente los elementos
+export { unidad as Unit, UnitSchema };
