@@ -1,26 +1,43 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema()
-export class clase extends Document {
+export class ClassComment {
   @Prop({ required: true })
-  nombre: string;
-
-  @Prop({ required: true })
-  descripcion: string;
+  author: string;
 
   @Prop({ required: true })
-  orden: number;  // Orden de la clase dentro de la unidad
+  rating: number; // Valoración de 1.0 a 5.0
 
   @Prop({ required: true })
-  url_video: string;  // URL del video
+  detail: string;
 
-  @Prop([String])
-  adjuntos: string[];  // Archivos adjuntos como URLs
-
-  // Referencia a la unidad a la que pertenece
-  @Prop({ type: Types.ObjectId, ref: 'Unit', required: true })
-  unidad: Types.ObjectId;
+  @Prop({ default: Date.now })
+  date: Date;
 }
 
-export const claseSchema = SchemaFactory.createForClass(clase);
+export const ClassCommentSchema = SchemaFactory.createForClass(ClassComment);
+
+@Schema()
+export class Class {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  description: string;
+
+  @Prop({ required: true })
+  videoUrl: string; // URL del video de la clase
+
+  @Prop([ClassCommentSchema])
+  comments: ClassComment[]; // Comentarios directamente dentro de clases
+
+  @Prop({ required: true })
+  order: number; // Orden de la clase dentro de la unidad
+
+  @Prop({ type: Types.ObjectId, ref: 'Unit', required: true })
+  unitId: Types.ObjectId; // Referencia a la unidad correspondiente
+}
+
+export type ClassDocument = Class & Document;
+export const ClassSchema = SchemaFactory.createForClass(Class);
