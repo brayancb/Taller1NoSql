@@ -1,21 +1,20 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema()
-export class unidad extends Document {
+export class Unit {
   @Prop({ required: true })
-  nombre: string;
+  name: string;
 
   @Prop({ required: true })
-  orden: number;  // Orden de la unidad dentro del curso
+  order: number; // Orden de la unidad dentro del curso
 
-  // Referencia a la colección de clases
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Lesson' }] })
-  clases: Types.ObjectId[];
-
-  // Referencia al curso al que pertenece
   @Prop({ type: Types.ObjectId, ref: 'Course', required: true })
-  curso: Types.ObjectId;
+  courseId: Types.ObjectId; // Referencia al curso correspondiente
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Class' }] })
+  classes: Types.ObjectId[]; // Referencia a las clases dentro de la unidad
 }
 
-export const unidadSchema = SchemaFactory.createForClass(unidad);
+export type UnitDocument = Unit & Document;
+export const UnitSchema = SchemaFactory.createForClass(Unit);

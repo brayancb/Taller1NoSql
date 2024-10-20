@@ -1,37 +1,49 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema()
-export class cursos extends Document {
+export class Comment {
   @Prop({ required: true })
-  nombre: string;
+  author: string;
 
   @Prop({ required: true })
-  descripcion: string;
+  rating: number; // Valoración de 1.0 a 5.0
 
-  @Prop()
-  imagen_principal: string;
+  @Prop({ required: true })
+  detail: string;
 
-  @Prop()
-  imagen_banner: string;
-
-  @Prop({ default: 0 })
-  inscritos: number;
-
-  @Prop({ default: 0, min: 1, max: 5 })
-  valoracion_promedio: number;
-
-  // Referencia a la colección de unidades
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'unidad' }] })
-  unidades: Types.ObjectId[];
-
-  // Referencia a la colección de comentarios
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'comentario' }] })
-  comentarios: Types.ObjectId[];
-
-  // Referencia a la colección de valoraciones
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'Rating' }] })
-  valoraciones: Types.ObjectId[];
+  @Prop({ default: Date.now })
+  date: Date;
 }
 
-export const cursoSchema = SchemaFactory.createForClass(cursos);
+export const CommentSchema = SchemaFactory.createForClass(Comment);
+
+@Schema()
+export class Course {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  shortDescription: string;
+
+  @Prop({ required: true })
+  image: string; // Imagen de la pantalla principal
+
+  @Prop({ required: true })
+  banner: string; // Imagen del banner en el detalle
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Unit' }] })
+  units: Types.ObjectId[]; // Referencia a las unidades
+
+  @Prop({ default: 0 })
+  enrolledUsers: number;
+
+  @Prop([CommentSchema])
+  comments: Comment[]; // Comentarios directamente dentro de cursos
+
+  @Prop({ required: true })
+  rating: number; // Valoración del curso
+}
+
+export type CourseDocument = Course & Document;
+export const CourseSchema = SchemaFactory.createForClass(Course);
