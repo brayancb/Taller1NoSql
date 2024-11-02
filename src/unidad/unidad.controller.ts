@@ -13,24 +13,19 @@ export class UnidadController {
   }
 
 
-    // Nueva ruta para obtener unidades filtradas por `courseId`
-    @Get('course/:courseId')
-    async findByCourse(@Param('courseId') courseId: string) {
-      const unidades = await this.unidadService.findByCourse(courseId);
-      if (!unidades || unidades.length === 0) {
-        throw new NotFoundException(`No se encontraron unidades para el curso con ID ${courseId}`);
-      }
-      return unidades;
+  // Obtener unidades filtradas por `courseId`
+  @Get('filtrar/:courseId')
+  async findByCourse(@Param('courseId') courseId: string) {
+    const unidades = await this.unidadService.findByCourse(courseId);
+    if (!unidades || unidades.length === 0) {
+      throw new NotFoundException(`No se encontraron unidades para el curso con ID ${courseId}`);
     }
+    return unidades;
+  }
 
   @Get('listar')
   findAll() {
     return this.unidadService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.unidadService.findOne(id);
   }
 
   @Patch(':id')
@@ -41,5 +36,10 @@ export class UnidadController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.unidadService.remove(id);
+  }
+
+  @Get('infoCompleta/:id')
+  async getUnitWithClasses(@Param('id') id: string) {
+    return this.unidadService.findUnitWithClasses(id);
   }
 }

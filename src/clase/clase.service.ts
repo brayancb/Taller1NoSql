@@ -3,7 +3,7 @@ import { CreateClassDto } from './dto/create-clase.dto';
 import { UpdateClaseDto } from './dto/update-clase.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Class } from 'src/schemas/clase.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class ClaseService {
@@ -11,13 +11,18 @@ export class ClaseService {
     @InjectModel(Class.name) private claseModel: Model<Class>,
   ) {}
 
-  // Crear una nueva clase
+  // 1-Crear una nueva clase
   async create(createClassDto: CreateClassDto): Promise<Class> {
     const newClass = new this.claseModel(createClassDto);
     return newClass.save();
   }
 
-  // Obtener todas las clases
+  // 2- Obtener todas las clases de una unidad específica
+  async findClassesByUnit(unitId: string): Promise<Class[]> {
+    return this.claseModel.find({ unitId: new Types.ObjectId(unitId) }).exec();
+  }
+
+  // 3- Obtener todas las clases
   async findAll(): Promise<Class[]> {
     return this.claseModel.find().exec();
   }

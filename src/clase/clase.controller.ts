@@ -7,13 +7,19 @@ import { UpdateClaseDto } from './dto/update-clase.dto';
 export class ClaseController {
   constructor(private readonly claseService: ClaseService) {}
 
-  // Crear una nueva clase
+  // 1- Crear una nueva clase
   @Post('crearClase')
   create(@Body() createClaseDto: CreateClassDto) {
     return this.claseService.create(createClaseDto);
   }
 
-  // Obtener todas las clases
+  // 2- Obtener todas las clases de una unidad específica
+  @Get('filtrar/:unitId')
+  findClassesByUnit(@Param('unitId') unitId: string) {
+    return this.claseService.findClassesByUnit(unitId);
+  }
+
+  // 3- Obtener todas las clases
   @Get('listar')
   findAll() {
     return this.claseService.findAll();

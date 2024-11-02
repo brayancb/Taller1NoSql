@@ -24,12 +24,6 @@ export class CursosController {
     return this.cursosService.findAll();
   }
 
-  // Obtener el detalle de un curso específico por ID
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cursosService.findOne(id);
-  }
-
   // Actualizar un curso por ID
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCursoDto: UpdateCursoDto) {
@@ -41,5 +35,10 @@ export class CursosController {
   remove(@Param('id') id: string) {
     return this.cursosService.remove(id);
   }
-}
 
+  // Obtener un curso con unidades y clases anidadas
+  @Get('cursoFull/:id')
+  async getCourseWithUnitsAndClasses(@Param('id') id: string) {
+    return this.cursosService.findCourseWithUnitsAndClasses(id);
+  }
+}

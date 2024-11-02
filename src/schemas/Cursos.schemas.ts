@@ -33,7 +33,7 @@ export class Course extends Document {
   banner: string; // Imagen del banner en el detalle
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Unit' }] })
-  units: Types.ObjectId[]; // Referencia a las unidades
+  units: Types.ObjectId[]; // Referencia a las unidades del curso
 
   @Prop({ default: 0 })
   enrolledUsers: number;

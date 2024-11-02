@@ -1,41 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { crearCursoDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 import { Course, CourseDocument } from 'src/schemas/Cursos.schemas';
+import { Unit, UnitDocument } from 'src/schemas/unidad.schemas';
 
 @Injectable()
 export class CursosService {
   constructor(
     @InjectModel(Course.name) private readonly courseModel: Model<CourseDocument>,
+    @InjectModel(Unit.name) private unitModel: Model<UnitDocument>,
   ) {}
 
-  // Crear un nuevo curso
+  //1- Crear un nuevo curso
   async create(createCursoDto: crearCursoDto): Promise<Course> {
     const createdCourse = new this.courseModel(createCursoDto);
     return createdCourse.save();
   }
 
-  // Obtener todos los cursos (solo información básica: nombre, imagen, descripción y valoración)
+  //2- Obtener todos los cursos (solo información básica: nombre, imagen, descripción y valoración)
   async findAllBasicInfo(): Promise<{ name: string; image: string; shortDescription: string; rating: number }[]> {
     return this.courseModel
       .find({}, 'name image shortDescription rating') // Selecciona solo estos campos
       .exec();
   }
 
-  // Obtener el detalle completo de todos los cursos
+  //3- Obtener el detalle completo de todos los cursos
   async findAll(): Promise<Course[]> {
     return this.courseModel.find().exec();
   }
 
-  // Obtener un curso específico por ID (con detalle completo)
-  async findOne(id: string): Promise<Course> {
-    return this.courseModel
-      .findById(id)
-      .populate('units') // Popula las unidades referenciadas
-      .exec();
-  }
+  //Extras
 
   // Actualizar un curso específico por ID
   async update(id: string, updateCursoDto: UpdateCursoDto): Promise<Course> {
@@ -46,4 +42,24 @@ export class CursosService {
   async remove(id: string): Promise<any> {
     return this.courseModel.findByIdAndDelete(id).exec();
   }
+
+// Método para obtener el curso con sus unidades asociadas
+async findCourseWithUnitsAndClasses(courseId: string): Promise<any> {
+  // 1. Consultar el curso por su ID
+  const course = await this.courseModel.findById(courseId).exec();
+
+  if (!course) {
+    throw new Error('Curso no encontrado');
+  }
+
+  // 2. Consultar las unidades asociadas al curso usando el `courseId`
+  const units = await this.unitModel.find({ courseId: new Types.ObjectId(courseId) }).exec();
+
+  // 3. Combinar el curso con sus unidades
+  return {
+    ...course.toObject(), // Convertimos el documento de Mongoose a un objeto normal
+    units, // Agregamos las unidades al objeto de respuesta
+  };
 }
+}
+

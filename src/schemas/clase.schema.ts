@@ -36,7 +36,7 @@ export class Class extends Document {
   order: number; // Orden de la clase dentro de la unidad
 
   @Prop({ type: Types.ObjectId, ref: 'Unit', required: true })
-  unitId: Types.ObjectId; // Referencia a la unidad correspondiente
+  unitId: Types.ObjectId; // Referencia a la unidad correspondiente  
 }
 
 export type ClassDocument = Class & Document;
