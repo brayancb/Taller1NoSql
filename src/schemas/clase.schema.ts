@@ -7,7 +7,10 @@ export class ClassComment extends Document {
   author: string;
 
   @Prop({ required: true })
-  rating: number; // Valoración de 1.0 a 5.0
+  like: number; // Valoración de 1.0 a 5.0
+
+  @Prop({ required: true })
+  disLike: number; // Valoración de 1.0 a 5.0
 
   @Prop({ required: true })
   detail: string;

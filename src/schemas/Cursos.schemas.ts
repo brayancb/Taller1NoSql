@@ -36,7 +36,7 @@ export class Course extends Document {
   units: Types.ObjectId[]; // Referencia a las unidades del curso
 
   @Prop({ default: 0 })
-  enrolledUsers: number;
+  enrolledUsers: number;// Número de usuarios inscritos
 
   @Prop([CommentSchema])
   comments: Comment[]; // Comentarios directamente dentro de cursos

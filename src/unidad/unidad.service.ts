@@ -26,7 +26,7 @@ export class UnidadService {
 
   //3- Obtener todas las unidades
   async findAll(): Promise<Unit[]> {
-    return this.unidadModel.find().populate('courseId').populate('classes').exec();
+    return this.unidadModel.find().exec();
   }
 
 //Extras
