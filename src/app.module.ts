@@ -6,9 +6,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UnidadModule } from './unidad/unidad.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CursosModule } from './cursos/cursos.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
+    SeedModule,
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
