@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { CursosService } from './cursos.service';
-import { crearCursoDto } from './dto/create-curso.dto';
+import { crearCursoDto, CreateCommentDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 
 @Controller('cursos')
@@ -31,7 +39,7 @@ export class CursosController {
   }
 
   // Eliminar un curso por ID
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.cursosService.remove(id);
   }
@@ -52,5 +60,14 @@ export class CursosController {
   @Get('comentarios/:id')
   async getAllComments(@Param('id') id: string) {
     return this.cursosService.findAllComments(id);
+  }
+
+  //Agregar un comentario a un curso
+  @Post(':id/addComentario')
+  async addCommentToCourse(
+    @Param('id') courseId: string,
+    @Body() createComentDto: CreateCommentDto,
+  ) {
+    return this.cursosService.addComment(courseId, createComentDto);
   }
 }

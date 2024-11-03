@@ -1,4 +1,10 @@
-import { IsString, IsNotEmpty, IsArray, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsArray,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateClassCommentDto {
   @IsString()
@@ -38,9 +44,6 @@ export class CreateClassDto {
   @IsNotEmpty()
   order: number; // Orden de la clase dentro de la unidad
 
-
   @IsNotEmpty()
   unitId: String; // Referencia a la unidad correspondiente
 }
-
-

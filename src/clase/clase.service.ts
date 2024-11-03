@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateClassDto } from './dto/create-clase.dto';
+import { CreateClassDto, CreateClassCommentDto } from './dto/create-clase.dto';
 import { UpdateClaseDto } from './dto/update-clase.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Class } from 'src/schemas/clase.schema';
@@ -7,9 +7,7 @@ import { Model, Types } from 'mongoose';
 
 @Injectable()
 export class ClaseService {
-  constructor(
-    @InjectModel(Class.name) private claseModel: Model<Class>,
-  ) {}
+  constructor(@InjectModel(Class.name) private claseModel: Model<Class>) {}
 
   // 1-Crear una nueva clase
   async create(createClassDto: CreateClassDto): Promise<Class> {
@@ -35,7 +33,7 @@ export class ClaseService {
   // 4- Dar like a un comentario de una clase
   async incrementLike(classId: string, commentId: string): Promise<Class> {
     const clase = await this.claseModel.findById(classId).exec();
-    const comment = clase.comments.find(c => c._id.toString() === commentId);
+    const comment = clase.comments.find((c) => c._id.toString() === commentId);
     comment.like++;
     return clase.save();
   }
@@ -43,7 +41,7 @@ export class ClaseService {
   // 5- Dar dislike a un comentario de una clase
   async incrementDisLike(classId: string, commentId: string): Promise<Class> {
     const clase = await this.claseModel.findById(classId).exec();
-    const comment = clase.comments.find(c => c._id.toString() === commentId);
+    const comment = clase.comments.find((c) => c._id.toString() === commentId);
     comment.disLike++;
     return clase.save();
   }
@@ -75,5 +73,28 @@ export class ClaseService {
     if (!result) {
       throw new NotFoundException(`Clase with ID ${id} not found`);
     }
+  }
+
+  // Método para agregar un comentario a una clase
+  async addComment(
+    classId: string,
+    createCommentDto: CreateClassCommentDto,
+  ): Promise<Class> {
+    const clase = await this.claseModel.findById(classId);
+
+    if (!clase) {
+      throw new NotFoundException('Clase no encontrada');
+    }
+
+    // Asigna la fecha actual si no se proporciona una
+    const commentWithDate = {
+      ...createCommentDto,
+      date: createCommentDto.date || new Date(), // Fecha proporcionada o actual
+      like: 0, // Inicializa el contador de likes en 0
+      disLike: 0, // Inicializa el contador de dislikes en 0
+    };
+
+    clase.comments.push(commentWithDate as any);
+    return clase.save(); // Guarda la clase actualizada con el nuevo comentario
   }
 }
