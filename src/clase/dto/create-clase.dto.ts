@@ -38,7 +38,9 @@ export class CreateClassDto {
   @IsNotEmpty()
   order: number; // Orden de la clase dentro de la unidad
 
-  @IsString()
+
   @IsNotEmpty()
-  unitId: string; // ID de la unidad correspondiente
+  unitId: String; // Referencia a la unidad correspondiente
 }
+
+

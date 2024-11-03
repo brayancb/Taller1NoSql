@@ -13,7 +13,12 @@ export class ClaseService {
 
   // 1-Crear una nueva clase
   async create(createClassDto: CreateClassDto): Promise<Class> {
-    const newClass = new this.claseModel(createClassDto);
+    const newClassData = {
+      ...createClassDto,
+      unitId: new Types.ObjectId(createClassDto.unitId.toString()), // Convierte unitId a ObjectId
+    };
+
+    const newClass = new this.claseModel(newClassData);
     return newClass.save();
   }
 
@@ -25,6 +30,22 @@ export class ClaseService {
   // 3- Obtener todas las clases
   async findAll(): Promise<Class[]> {
     return this.claseModel.find().exec();
+  }
+
+  // 4- Dar like a un comentario de una clase
+  async incrementLike(classId: string, commentId: string): Promise<Class> {
+    const clase = await this.claseModel.findById(classId).exec();
+    const comment = clase.comments.find(c => c._id.toString() === commentId);
+    comment.like++;
+    return clase.save();
+  }
+
+  // 5- Dar dislike a un comentario de una clase
+  async incrementDisLike(classId: string, commentId: string): Promise<Class> {
+    const clase = await this.claseModel.findById(classId).exec();
+    const comment = clase.comments.find(c => c._id.toString() === commentId);
+    comment.disLike++;
+    return clase.save();
   }
 
   // Obtener una clase por su ID

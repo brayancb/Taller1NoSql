@@ -15,9 +15,14 @@ export class UnidadService {
 
   //1- Crear una nueva unidad
   async create(createUnidadDto: CreateUnidadtDto): Promise<Unit> {
-    const createdUnit = new this.unidadModel(createUnidadDto);
-    return createdUnit.save();
-  }
+    const createdUnit = {
+      ...createUnidadDto,
+      courseId: new Types.ObjectId(createUnidadDto.courseId.toString()), // Convierte courseId a ObjectId
+    };
+    const newUnit = new this.unidadModel(createdUnit);
+    return newUnit.save();
+    }
+  
 
   //2- Obtener todas las unidades de un curso específico
   async findByCourse(courseId: string): Promise<Unit[]> {

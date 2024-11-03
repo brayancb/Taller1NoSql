@@ -15,7 +15,7 @@ export class CursosService {
 
   //1- Crear un nuevo curso
   async create(createCursoDto: crearCursoDto): Promise<Course> {
-    const createdCourse = new this.courseModel(createCursoDto);
+    const createdCourse =  new this.courseModel(createCursoDto);
     return createdCourse.save();
   }
 

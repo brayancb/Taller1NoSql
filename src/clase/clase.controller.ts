@@ -25,6 +25,18 @@ export class ClaseController {
     return this.claseService.findAll();
   }
 
+  // 4- Dar like a un comentario de una clase
+  @Patch('like/:classId/comentario/:commentId')
+  incrementLike(@Param('classId') classId: string, @Param('commentId') commentId: string) {
+    return this.claseService.incrementLike(classId, commentId);
+  }
+
+  // 5- Dar dislike a un comentario de una clase
+  @Patch('dislike/:classId/comentario/:commentId')
+  incrementDisLike(@Param('classId') classId: string, @Param('commentId') commentId: string) {
+    return this.claseService.incrementDisLike(classId, commentId);
+  }
+
   // Obtener una clase por su ID
   @Get(':id')
   findOne(@Param('id') id: string) {
