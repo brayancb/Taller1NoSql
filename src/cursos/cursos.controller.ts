@@ -41,4 +41,16 @@ export class CursosController {
   async getCourseWithUnitsAndClasses(@Param('id') id: string) {
     return this.cursosService.findCourseWithUnitsAndClasses(id);
   }
+
+  //Obtener los 3 comentarios más valorados
+  @Get('comentarios/top/:id')
+  async getTopComments(@Param('id') id: string) {
+    return this.cursosService.findTopComments(id);
+  }
+
+  //Obtener todos los comentarios para un curso
+  @Get('comentarios/:id')
+  async getAllComments(@Param('id') id: string) {
+    return this.cursosService.findAllComments(id);
+  }
 }

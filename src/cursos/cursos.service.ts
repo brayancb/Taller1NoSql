@@ -61,5 +61,33 @@ async findCourseWithUnitsAndClasses(courseId: string): Promise<any> {
     units, // Agregamos las unidades al objeto de respuesta
   };
 }
+
+//Método para obtener los 3 comentarios más valorados por rating
+async findTopComments(courseId: string): Promise<any> {
+  // Consultar el curso por su ID
+  const course = await this.courseModel.findById(courseId).exec();
+
+  if (!course) {
+    throw new Error('Curso no encontrado');
+  }
+
+  // Obtener los comentarios del curso y ordenarlos por 'rating' en orden descendente
+  const topComments = course.comments
+    .sort((a, b) => b.rating - a.rating) // Ordenar comentarios por 'rating'
+    .slice(0, 3); // Obtener los 3 más valorados
+
+  return topComments;
+}
+
+// Método para obtener todos los comentarios de un curso
+async findAllComments(courseId: string): Promise<any[]> {
+  const course = await this.courseModel.findById(courseId).exec();
+
+  if (!course) {
+    throw new Error('Curso no encontrado');
+  }
+
+  return course.comments; // Retorna todos los comentarios del curso
+}
 }
 
