@@ -20,7 +20,7 @@
 - Clase de "Introducción a JavaScript":
 - - _id: ObjectId 67243acbc56c0990e35a07c7
 - - name:"Arraylist en JavaScript"
-
+## Endpoints y Headers en el informe
 
 
 
