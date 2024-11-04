@@ -7,6 +7,7 @@ import { UnidadModule } from './unidad/unidad.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CursosModule } from './cursos/cursos.module';
 import { SeedModule } from './seed/seed.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SeedModule } from './seed/seed.module';
     ClaseModule,
     UnidadModule,
     CursosModule,
+    UsuariosModule,
 
   ],
   controllers: [AppController],
