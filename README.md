@@ -1,13 +1,13 @@
-Instrucciones para la ejecución de la aplicación
-En mongodb crear una base de datos llamada “taller” 
-Abrir el proyecto backend
-En la consola ejecutar el comando “npm install”
-Abrir el Docker Desktop
-Ejecutar “docker-compose up -d” por consola para crear el contenedor
-Para levantar el backend, por consola ejecutar el comando npm start
-Nota: Ya viene con un script que poblar la base de datos apenas se levanta el backend
-Para ejecutar los endpoints se recomienda el uso de postman, la información para probarlos se encuentra en el partido de “Rutas y Endpoints” y los headers en caso que se requieran para probarlos en “Postman y Headers”
-Las id correspondientes se pueden obtener de los elementos creados en el mongodb por el script, aunque también algunos son creados con ids pre-establecidas.
+##Instrucciones para la ejecución de la aplicación
+1- En mongodb crear una base de datos llamada “taller” 
+2 -Abrir el proyecto backend
+3 -En la consola ejecutar el comando “npm install”
+4 -Abrir el Docker Desktop
+5 -Ejecutar “docker-compose up -d” por consola para crear el contenedor
+6 -Para levantar el backend, por consola ejecutar el comando npm start
+##Nota: Ya viene con un script que poblar la base de datos apenas se levanta el backend
+7 -Para ejecutar los endpoints se recomienda el uso de postman, la información para probarlos se encuentra en el partido de “Rutas y Endpoints” y los headers en caso que se requieran para probarlos en “Postman y Headers”
+8 -Las id correspondientes se pueden obtener de los elementos creados en el mongodb por el script, aunque también algunos son creados con ids pre-establecidas.
 Ejemplos:
 curso:
 _id: ObjectId67239fb5b27a1a90bbdfc7d1
