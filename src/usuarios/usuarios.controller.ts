@@ -1,19 +1,25 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UsuariosService } from './usuarios.service';
+import { UsuarioService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 
 @Controller('usuarios')
 export class UsuariosController {
-  constructor(private readonly usuariosService: UsuariosService) {}
+  constructor(private readonly usuariosService: UsuarioService) {}
 
-  @Post('register')
+  @Post('/register')
   create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.createUser(createUsuarioDto.name, createUsuarioDto.isAdmin);
+    return this.usuariosService.create(createUsuarioDto);
   }
 
-  @Post('login')
+  @Get('/listar')
+  findAll() {
+    return this.usuariosService.findAll();
+  }
+
+  @Post('/login')
   login(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuariosService.loginUser(createUsuarioDto.name);
+    const { email, password } = createUsuarioDto;
+    return this.usuariosService.login(email, password);
   }
 }

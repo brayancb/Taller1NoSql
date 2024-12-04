@@ -1,27 +1,77 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { DynamoDBDocumentClient, PutCommand, ScanCommand, GetCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { Usuario } from '../schemas/usuario.interface';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { User, UserDocument } from 'src/schemas/usuarios.schema';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
-export class UsuariosService {
+export class UsuarioService {
+  private readonly tableName = 'Users';
+
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @Inject('DYNAMODB_CLIENT')
+    private readonly dynamoDbClient: DynamoDBDocumentClient,
   ) {}
+
+  async create(createUsuarioDto: CreateUsuarioDto): Promise<void> {
+    const { name, email, password, cursos } = createUsuarioDto;
   
-  // Crear un nuevo usuario
-  async createUser(name: string, isAdmin: number): Promise<User> {
-    const newUser = new this.userModel({ name, isAdmin });
-    return newUser.save();
+    console.log('Datos recibidos:', createUsuarioDto);
+
+    const newUser: Usuario = {
+      name,
+      email,
+      password,
+      cursos,
+    };
+  
+    const params = {
+      TableName: this.tableName,
+      Item: newUser,
+    };
+  
+    await this.dynamoDbClient.send(new PutCommand(params));
   }
 
-  // Login del usuario
-  async loginUser(name: string): Promise<User> {
-    const user = await this.userModel.findOne({ name }).exec();
-    if (!user) {
-      throw new NotFoundException(`Usuario con nombre ${name} no encontrado`);
+  // Obtener todos los usuarios (opcional, no recomendado para grandes tablas)
+  async findAll(): Promise<Usuario[]> {
+    const params = {
+      TableName: this.tableName,
+    };
+
+    const result = await this.dynamoDbClient.send(new ScanCommand(params));
+    return result.Items as Usuario[];
+  }
+
+  // Obtener un usuario por email (Partition Key)
+  async findOne(email: string): Promise<Usuario> {
+    const params = {
+      TableName: this.tableName,
+      Key: { email },
+    };
+
+    const result = await this.dynamoDbClient.send(new GetCommand(params));
+    return result.Item as Usuario;
+  }
+
+  // Actualizar cursos del usuario
+  async updateCourses(email: string, cursos: string[]): Promise<void> {
+    const params = {
+      TableName: this.tableName,
+      Key: { email },
+      UpdateExpression: 'SET cursos = :cursos',
+      ExpressionAttributeValues: {
+        ':cursos': cursos,
+      },
+    };
+
+    await this.dynamoDbClient.send(new UpdateCommand(params));
+  }
+
+  async login (email: string, password: string): Promise<Usuario> {
+    const user = await this.findOne(email);
+    if (!user || user.password !== password) {
+      throw new Error('Credenciales inválidas');
     }
     return user;
   }

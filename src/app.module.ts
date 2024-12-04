@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ClaseModule } from './clase/clase.module';
@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CursosModule } from './cursos/cursos.module';
 import { SeedModule } from './seed/seed.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { createTable, deleteTable, listTables} from './seed/scriptDB';
 
 @Module({
   imports: [
@@ -25,9 +26,18 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     UnidadModule,
     CursosModule,
     UsuariosModule,
-
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  async onModuleInit() {
+    console.log('Initializing DynamoDB tables...');
+    try {
+      await createTable();
+      await listTables();
+    } catch (error) {
+      console.error('Error initializing DynamoDB tables:', error);
+    }
+  }
+}

@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
-import { UsuariosService } from './usuarios.service';
+import { UsuarioService } from './usuarios.service';
 import { UsuariosController } from './usuarios.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/schemas/usuarios.schema';
+import { DynamoDBModule } from '../dynamodbDTO/dynamodb.module'; // Asegúrate de importar el módulo correcto
 
 @Module({
   imports: [
-    MongooseModule.forFeature([ {name: User.name, schema: UserSchema}]),
+    DynamoDBModule, // Importa el módulo DynamoDB
   ],
   controllers: [UsuariosController],
-  providers: [UsuariosService],
+  providers: [UsuarioService],
 })
 export class UsuariosModule {}

@@ -1,10 +1,19 @@
-import { IsNotEmpty, IsString } from 'class-validator';
-
+import { IsArray, IsNotEmpty, IsOptional, IsString, IsBoolean, IsNumber, ValidateNested } from 'class-validator';
 export class CreateUsuarioDto {
     @IsString()
     @IsNotEmpty()
-    name: string;
+    name: string; // Nombre del usuario
+  
     @IsString()
     @IsNotEmpty()
-    isAdmin: number;
-}
+    email: string; // Correo electrónico
+  
+    @IsString()
+    @IsNotEmpty()
+    password: string; // Contraseña
+    
+    @IsArray()
+    @IsString()
+    cursos: string[]; // Arreglo de IDs de cursos referenciados
+  }
+

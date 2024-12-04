@@ -9,3 +9,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: toor
     ports:
       - '27017:27017'
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: dynamodb-local
+    restart: always
+    ports:
+      - '27018:8000' # DynamoDB expone este puerto para operaciones locales
+    command: "-jar DynamoDBLocal.jar -sharedDb" # Habilita una base de datos compartida para pruebas
