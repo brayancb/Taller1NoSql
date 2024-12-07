@@ -36,21 +36,27 @@ export const deleteTable = async (tableName: string) => {
 };
 
 export const createTable = async () => {
-  const params = {
-    TableName: 'Users',
-    KeySchema: [
-      { AttributeName: 'email', KeyType: KeyType.HASH }, // Primary key
-    ],
-    AttributeDefinitions: [
-      { AttributeName: 'email', AttributeType: ScalarAttributeType.S }, // 'S' significa string
-    ],
-    ProvisionedThroughput: {
-      ReadCapacityUnits: 1,
-      WriteCapacityUnits: 1,
-    },
-  };
-
   try {
+    // Verificar si la tabla ya existe
+    const existingTables = await client.send(new ListTablesCommand({}));
+    if (existingTables.TableNames.includes('Users')) {
+      console.log('La tabla "Users" ya existe. Se omite la creación.');
+      return;
+    }
+    const params = {
+     TableName: 'Users',
+     KeySchema: [
+       { AttributeName: 'email', KeyType: KeyType.HASH }, // Primary key
+     ],
+      AttributeDefinitions: [
+        { AttributeName: 'email', AttributeType: ScalarAttributeType.S }, // 'S' significa string
+      ],
+      ProvisionedThroughput: {
+       ReadCapacityUnits: 1,
+       WriteCapacityUnits: 1,
+     },
+    };
+
     await client.send(new CreateTableCommand(params));
     console.log('Table created successfully');
   } catch (error) {
@@ -60,6 +66,6 @@ export const createTable = async () => {
 
 // Llama a las funciones según sea necesario
 
-deleteTable('Users');
-createTable();
+//deleteTable('Users');
+//createTable();
 listTables();
