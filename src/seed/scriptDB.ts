@@ -1,4 +1,4 @@
-import { DynamoDBClient, ListTablesCommand, DeleteTableCommand, CreateTableCommand, ScalarAttributeType, KeyType } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, ListTablesCommand, DeleteTableCommand, CreateTableCommand, ScalarAttributeType, KeyType, PutItemCommand } from '@aws-sdk/client-dynamodb';
 import * as dotenv from 'dotenv';
 
 // Carga las variables de entorno desde el archivo .env
@@ -64,8 +64,64 @@ export const createTable = async () => {
   }
 };
 
+const users = [
+  {
+    email: 'jorge@example.com',
+    name: 'Jorge',
+    password: 'password123',
+    cursos: [
+      { idCurso: '67239fb5b27a1a90bbdfc7d1', estado: 'iniciado', fechaIngreso: new Date().toISOString(), progreso: 10 },
+      { idCurso: '67239fb5b27a1a90bbdfc7d2', estado: 'en curso', fechaIngreso: new Date().toISOString(), progreso: 50 }
+    ]
+  },
+  {
+    email: 'marta@example.com',
+    name: 'Marta',
+    password: 'password123',
+    cursos: [
+      { idCurso: '67239fb5b27a1a90bbdfc7d1', estado: 'completado', fechaIngreso: new Date().toISOString(), progreso: 100 }
+    ]
+  },
+  {
+    email: 'ana@example.com',
+    name: 'Ana',
+    password: 'password123',
+    cursos: [
+      { idCurso: '67239fb5b27a1a90bbdfc7d2', estado: 'iniciado', fechaIngreso: new Date().toISOString(), progreso: 20 }
+    ]
+  }
+];
+
+export const populateUsers = async () => {
+  try {
+    for (const user of users) {
+      const params = {
+        TableName: 'Users',
+        Item: {
+          email: { S: user.email },
+          name: { S: user.name },
+          password: { S: user.password },
+          cursos: { L: user.cursos.map(curso => ({
+            M: {
+              idCurso: { S: curso.idCurso },
+              estado: { S: curso.estado },
+              fechaIngreso: { S: curso.fechaIngreso },
+              progreso: { N: curso.progreso.toString() }
+            }
+          })) }
+        }
+      };
+      await client.send(new PutItemCommand(params));
+    }
+    console.log('Users populated successfully');
+  } catch (error) {
+    console.error('Error populating users:', error);
+  }
+};
+
 // Llama a las funciones según sea necesario
 
 //deleteTable('Users');
 //createTable();
 listTables();
+populateUsers();

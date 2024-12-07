@@ -70,7 +70,6 @@ export class UsuarioService {
 
   // Método para agregar un curso al usuario con información adicional
   // La forma en que se ejecuta el updateCourses sobrescribe los cursos existentes, esta forma no los sobreescribe
-  // Falta probarlo asi que por eso deje este y el de arriba para ver cual funciona mejor
   async addCourseToUser(email: string, courseId: string): Promise<void> {
     const nuevoCurso = {
       idCurso: courseId,

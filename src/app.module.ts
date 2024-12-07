@@ -8,7 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CursosModule } from './cursos/cursos.module';
 import { SeedModule } from './seed/seed.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
-import { createTable, deleteTable, listTables} from './seed/scriptDB';
+import { createTable, deleteTable, listTables, populateUsers} from './seed/scriptDB';
 
 @Module({
   imports: [
@@ -35,6 +35,7 @@ export class AppModule implements OnModuleInit {
     console.log('Initializing DynamoDB tables...');
     try {
       await createTable();
+      await populateUsers();
       await listTables();
     } catch (error) {
       console.error('Error initializing DynamoDB tables:', error);
