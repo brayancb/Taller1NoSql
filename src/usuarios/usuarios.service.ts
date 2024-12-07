@@ -22,7 +22,7 @@ export class UsuarioService {
       name,
       email,
       password,
-      cursos,
+      cursos: [], // Inicialmente no tiene cursos
     };
   
     const params = {
@@ -68,20 +68,65 @@ export class UsuarioService {
     await this.dynamoDbClient.send(new UpdateCommand(params));
   }
 
-  // Método para agregar un curso al usuario
+  // Método para agregar un curso al usuario con información adicional
   // La forma en que se ejecuta el updateCourses sobrescribe los cursos existentes, esta forma no los sobreescribe
   // Falta probarlo asi que por eso deje este y el de arriba para ver cual funciona mejor
   async addCourseToUser(email: string, courseId: string): Promise<void> {
+    const nuevoCurso = {
+      idCurso: courseId,
+      estado: 'INICIADO',
+      fechaIngreso: new Date().toISOString(),
+      progreso: 0,
+    };
     const params = {
       TableName: this.tableName,
       Key: { email },
-      UpdateExpression: 'SET cursos = list_append(if_not_exists(cursos, :empty_list), :courseId)',
+      UpdateExpression: 'SET cursos = list_append(if_not_exists(cursos, :empty_list), :nuevoCurso)',
       ExpressionAttributeValues: {
-        ':courseId': [courseId],
+        ':nuevoCurso': [nuevoCurso],
         ':empty_list': [],
       },
     };
 
+    await this.dynamoDbClient.send(new UpdateCommand(params));
+  }
+
+  // Método para actualizar el estado y progreso de un curso de un usuario
+  async updateCourseStatus(
+    email: string,
+    courseId: string,
+    estado: 'INICIADO' | 'EN CURSO' | 'COMPLETADO',
+    progreso: number,
+  ): Promise<void> {
+    // Obtener el usuario actual
+    const usuario = await this.findOne(email);
+  
+    if (!usuario || !usuario.cursos) {
+      throw new Error('Usuario no encontrado o sin cursos inscritos');
+    }
+  
+    // Actualizar el curso específico
+    const cursosActualizados = usuario.cursos.map((curso) => {
+      if (curso.idCurso === courseId) {
+        return {
+          ...curso,
+          estado,
+          progreso,
+        };
+      }
+      return curso;
+    });
+  
+    // Guardar los cambios en DynamoDB
+    const params = {
+      TableName: this.tableName,
+      Key: { email },
+      UpdateExpression: 'SET cursos = :cursos',
+      ExpressionAttributeValues: {
+        ':cursos': cursosActualizados,
+      },
+    };
+  
     await this.dynamoDbClient.send(new UpdateCommand(params));
   }
 
