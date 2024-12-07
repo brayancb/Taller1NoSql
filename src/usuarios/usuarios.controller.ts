@@ -22,4 +22,16 @@ export class UsuariosController {
     const { email, password } = createUsuarioDto;
     return this.usuariosService.login(email, password);
   }
+
+  // Actualizar cursos del usuario
+  // Este enpoint llama al metodo addCourseToUser del servicio de usuarios para agregar un curso al arreglo de cursos del usuario
+  @Post('/enroll/:email/:courseId')
+  async enrollCourse(
+    @Param('email') email: string,
+    @Param('courseId') courseId: string,
+  ) {
+    await this.usuariosService.addCourseToUser(email, courseId);
+    return { message: `Usuario ${email} inscrito en el curso ${courseId}` };
+  }
+  
 }

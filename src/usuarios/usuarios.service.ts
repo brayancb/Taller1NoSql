@@ -68,6 +68,23 @@ export class UsuarioService {
     await this.dynamoDbClient.send(new UpdateCommand(params));
   }
 
+  // Método para agregar un curso al usuario
+  // La forma en que se ejecuta el updateCourses sobrescribe los cursos existentes, esta forma no los sobreescribe
+  // Falta probarlo asi que por eso deje este y el de arriba para ver cual funciona mejor
+  async addCourseToUser(email: string, courseId: string): Promise<void> {
+    const params = {
+      TableName: this.tableName,
+      Key: { email },
+      UpdateExpression: 'SET cursos = list_append(if_not_exists(cursos, :empty_list), :courseId)',
+      ExpressionAttributeValues: {
+        ':courseId': [courseId],
+        ':empty_list': [],
+      },
+    };
+
+    await this.dynamoDbClient.send(new UpdateCommand(params));
+  }
+
   async login (email: string, password: string): Promise<Usuario> {
     const user = await this.findOne(email);
     if (!user || user.password !== password) {
