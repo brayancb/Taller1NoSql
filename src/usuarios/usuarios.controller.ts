@@ -34,16 +34,16 @@ export class UsuariosController {
     return { message: `Usuario ${email} inscrito en el curso ${courseId}` };
   }
   
-  // Actualizar el ESTADO y PROGRESO de un curso para un usuario
+  // Actualizar el PROGRESO de un curso para un usuario y cambiar su ESTADO
   @Post('/updateCourseStatus/:email/:courseId')
   async updateCourseStatus(
     @Param('email') email: string,
     @Param('courseId') courseId: string,
-    @Body() updateData: { estado: 'INICIADO' | 'EN CURSO' | 'COMPLETADO'; progreso: number },
+    @Body() updateData: { progreso: number },
   ) {
-    const { estado, progreso } = updateData;
-    await this.usuariosService.updateCourseStatus(email, courseId, estado, progreso);
-    return { message: `Estado del curso ${courseId} actualizado para el usuario ${email}` };
+    const { progreso } = updateData;
+    await this.usuariosService.updateCourseStatus(email, courseId, progreso);
+    return { message: `Progreso del curso ${courseId} actualizado para el usuario ${email}` };
   }
 
   // Endpoint para obtener los cursos de un usuario

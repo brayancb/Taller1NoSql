@@ -91,11 +91,10 @@ export class UsuarioService {
     await this.dynamoDbClient.send(new UpdateCommand(params));
   }
 
-  // Método para actualizar el estado y progreso de un curso de un usuario
+  // Método para actualizar el progreso de un curso de un usuario y cambiar su estado de acuerdo al progreso
   async updateCourseStatus(
     email: string,
     courseId: string,
-    estado: 'INICIADO' | 'EN CURSO' | 'COMPLETADO',
     progreso: number,
   ): Promise<void> {
     // Obtener el usuario actual
@@ -103,6 +102,20 @@ export class UsuarioService {
   
     if (!usuario || !usuario.cursos) {
       throw new Error('Usuario no encontrado o sin cursos inscritos');
+    }
+
+    // Determinar el estado de acuerdo al progreso
+    let estado: 'INICIADO' | 'EN CURSO' | 'COMPLETADO';
+
+    if (progreso <= 0) {
+      estado = 'INICIADO';
+    } else if (progreso > 0 && progreso < 100) {
+      estado = 'EN CURSO';
+    } else if (progreso >= 100) {
+      estado = 'COMPLETADO';
+      progreso = 100; // Asegurarse de que el progreso no exceda el 100%
+    } else {
+      throw new Error('El progreso debe estar entre 0 y 100');
     }
   
     // Actualizar el curso específico
