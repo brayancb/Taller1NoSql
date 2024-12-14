@@ -3,6 +3,7 @@ import { DynamoDBDocumentClient, PutCommand, ScanCommand, GetCommand, UpdateComm
 import { Usuario } from '../schemas/usuario.interface';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { v4 as uuidv4 } from 'uuid';
+import { driver } from 'src/Neo4J/neo4j.config';
 
 @Injectable()
 export class UsuarioService {
@@ -31,6 +32,17 @@ export class UsuarioService {
     };
   
     await this.dynamoDbClient.send(new PutCommand(params));
+
+    // Crear nodo en Neo4j
+    const session = driver.session();
+    try {
+      await session.run(
+        'CREATE (u:Usuario {email: $email, name: $name})',
+       { email: createUsuarioDto.email, name: createUsuarioDto.name },
+     );
+    } finally {
+      await session.close();
+    }
   }
 
   // Obtener todos los usuarios (opcional, no recomendado para grandes tablas)

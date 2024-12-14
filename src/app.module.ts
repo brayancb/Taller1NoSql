@@ -9,6 +9,7 @@ import { CursosModule } from './cursos/cursos.module';
 import { SeedModule } from './seed/seed.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { createTable, deleteTable, listTables, populateUsers} from './seed/scriptDB';
+import { CommentsModule } from './comentarios/comments.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { createTable, deleteTable, listTables, populateUsers} from './seed/scrip
     UnidadModule,
     CursosModule,
     UsuariosModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

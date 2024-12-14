@@ -5,6 +5,7 @@ import { crearCursoDto, CreateCommentDto } from './dto/create-curso.dto';
 import { UpdateCursoDto } from './dto/update-curso.dto';
 import { Course, CourseDocument } from 'src/schemas/Cursos.schemas';
 import { Unit, UnitDocument } from 'src/schemas/unidad.schemas';
+import { driver } from 'src/Neo4J/neo4j.config';
 
 @Injectable()
 export class CursosService {
@@ -16,8 +17,22 @@ export class CursosService {
 
   //1- Crear un nuevo curso
   async create(createCursoDto: crearCursoDto): Promise<Course> {
+    // Crear y guardar el curso en MongoDB
     const createdCourse = new this.courseModel(createCursoDto);
-    return createdCourse.save();
+    const savedCourse = await createdCourse.save();
+    //return createdCourse.save();
+
+    // Crear nodo en Neo4j
+    const session = driver.session();
+    try {
+      await session.run(
+        'CREATE (c:Curso {id: $id, name: $name, rating: $rating})',
+        { id: savedCourse._id.toString(), name: savedCourse.name, rating: savedCourse.rating},
+      );
+    } finally {
+      await session.close();
+    }
+    return savedCourse;
   }
 
   //2- Obtener todos los cursos (solo información básica: nombre, imagen, descripción y valoración)
