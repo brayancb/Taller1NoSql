@@ -92,5 +92,19 @@ export class CommentsService {
       await session.close();
     }
   }
+
+  // Nueva función para agregar comentarios de prueba
+  async addTestComments(): Promise<void> {
+    const testComments = [
+      { email: 'jorge@example.com', courseId: '67239fb5b27a1a90bbdfc7d1', text: 'Excelente curso!', rating: 5 },
+      { email: 'marta@example.com', courseId: '67239fb5b27a1a90bbdfc7d2', text: 'Muy útil y bien explicado.', rating: 4 },
+      { email: 'ana@example.com', courseId: '67239fb5b27a1a90bbdfc7d1', text: 'Me ayudó mucho a entender los conceptos básicos.', rating: 5 },
+    ];
+
+    for (const { email, courseId, text, rating } of testComments) {
+      await this.addComment(email, courseId, text, rating);
+    }
+    console.log('Test comments added successfully');
+      }
   
 }

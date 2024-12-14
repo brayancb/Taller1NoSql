@@ -8,8 +8,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CursosModule } from './cursos/cursos.module';
 import { SeedModule } from './seed/seed.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
-import { createTable, deleteTable, listTables, populateUsers} from './seed/scriptDB';
+import { createTable, deleteTable, listTables, populateUsers, addTestComments } from './seed/scriptDB';
 import { CommentsModule } from './comentarios/comments.module';
+
+let initialized = false;
 
 @Module({
   imports: [
@@ -34,13 +36,17 @@ import { CommentsModule } from './comentarios/comments.module';
 })
 export class AppModule implements OnModuleInit {
   async onModuleInit() {
-    console.log('Initializing DynamoDB tables...');
-    try {
-      await createTable();
-      await populateUsers();
-      await listTables();
-    } catch (error) {
-      console.error('Error initializing DynamoDB tables:', error);
+    if (!initialized) {
+      initialized = true;
+      console.log('Initializing DynamoDB tables...');
+      try {
+        await createTable();
+        await populateUsers();
+        await listTables();
+        await addTestComments();
+      } catch (error) {
+        console.error('Error initializing DynamoDB tables:', error);
+      }
     }
   }
 }

@@ -4,6 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Course } from 'src/schemas/Cursos.schemas';
 import { Unit } from 'src/schemas/unidad.schemas';
 import { Class } from 'src/schemas/clase.schema';
+import { driver } from '../neo4j/neo4j.config';
 
 @Injectable()
 export class SeedService implements OnModuleInit {
@@ -36,6 +37,18 @@ export class SeedService implements OnModuleInit {
       });
       await course1.save();
 
+            // Crear nodo de curso en Neo4j
+            const session = driver.session();
+            try {
+              await session.run(
+                'CREATE (c:Curso {id: $id, name: $name})',
+                { id: course1._id.toString(), name: course1.name },
+              );
+            } finally {
+              await session.close();
+            }
+          
+
       const units1 = [
         { _id: new Types.ObjectId('67243acbc56c0990e35a07c5'), name: "Introducción a JavaScript", order: 1, courseId: course1._id },
         { _id: new Types.ObjectId('67243acbc56c0990e35a07c6'), name: "JavaScript nivel intermedio", order: 2, courseId: course1._id }
@@ -67,6 +80,18 @@ export class SeedService implements OnModuleInit {
       });
       await course2.save();
 
+            // Crear nodo de curso en Neo4j
+            const session = driver.session();
+            try {
+              await session.run(
+                'CREATE (c:Curso {id: $id, name: $name})',
+                { id: course2._id.toString(), name: course2.name },
+              );
+            } finally {
+              await session.close();
+            }
+          
+
       const units2 = [
         { _id: new Types.ObjectId('67243acbc56c0990e35a07c8'), name: "Automatización con Python", order: 1, courseId: course2._id },
         { _id: new Types.ObjectId('67243acbc56c0990e35a07c9'), name: "Web Scraping Avanzado", order: 2, courseId: course2._id }
@@ -97,6 +122,17 @@ export class SeedService implements OnModuleInit {
         rating: 4.7,
       });
       await course3.save();
+
+            // Crear nodo de curso en Neo4j
+            const session = driver.session();
+            try {
+              await session.run(
+                'CREATE (c:Curso {id: $id, name: $name})',
+                { id: course3._id.toString(), name: course3.name },
+              );
+            } finally {
+              await session.close();
+            }
 
       const units3 = [
         { _id: new Types.ObjectId('67243acbc56c0990e35a07d1'), name: "Fundamentos de React", order: 1, courseId: course3._id },
