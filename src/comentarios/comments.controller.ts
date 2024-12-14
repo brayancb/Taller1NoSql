@@ -15,4 +15,14 @@ export class CommentsController {
   async getUserComments(@Param('email') email: string) {
     return this.commentsService.getUserComments(email);
   }
+
+  @Get('allNodes')
+  async getAllNodes() {
+    return this.commentsService.getAllNodes();
+  }
+
+  @Get('/prueba1/:email')
+  async getUserCourseComments(@Param('email') email: string) {
+    return this.commentsService.getUserCourseComments(email);
+  }
 }
